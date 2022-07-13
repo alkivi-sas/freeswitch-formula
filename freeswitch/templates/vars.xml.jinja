@@ -1,0 +1,13 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<include>
+{%- for var, data in freeswitch.get('vars', {})|dictsort %}
+{%- if data is string or data is number %}
+    <X-PRE-PROCESS cmd="set" data="{{ var }}={{ data }}"/>
+{%- elif data is mapping %}
+{%- elif data| is_list %}
+    <X-PRE-PROCESS cmd="set" data="{{ var }}={{ data|join(',') }}"/>
+{%- endif %}
+{%- endfor %}
+</include>

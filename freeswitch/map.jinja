@@ -1,0 +1,34 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{## Start with  defaults from defaults.sls ##}
+{% import_yaml 'freeswitch/defaults.yaml' as default_settings %}
+
+{##
+Setup variable using grains['os_family'] based logic, only add key:values here
+that differ from whats in defaults.yaml
+##}
+{% set os_family_map = salt['grains.filter_by']({
+    'Debian': {
+        'pkg': 'freeswitch-meta-all',
+    },
+    'RedHat': {
+        'pkg': 'freeswitch-meta-all',
+    },
+    'Arch': {
+        'pkg': 'freeswitch-meta-all',
+    },
+  }
+  , grain="os_family"
+  , merge=salt['pillar.get']('freeswitch:lookup'))
+%}
+{## Merge the flavor_map to the default settings ##}
+{% do default_settings.freeswitch.update(os_family_map) %}
+
+{## Merge in freeswitch:lookup pillar ##}
+{% set freeswitch = salt['pillar.get'](
+        'freeswitch',
+        default=default_settings.freeswitch,
+        merge=True
+    )
+%}

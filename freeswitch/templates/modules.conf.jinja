@@ -1,0 +1,6 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+# This file is managed by Salt 
+#   !! DO NOT EDIT !!
+{% for module in freeswitch.get('modules', [])|sort -%}
+{{ module }}
+{% endfor -%}

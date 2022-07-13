@@ -1,0 +1,16 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<profile name="internal">
+  <domains>
+    {%- for domain in freeswitch.sip_profiles.internal.get('domains', []) %}
+    <domain name="{{ domain.name }}" alias="{{ domain.alias }}" parse="{{ domain.parse }}"/>
+    {%- endfor %}
+  </domains>
+
+  <settings>
+    {%- for param in freeswitch.sip_profiles.internal.get('settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </settings>
+</profile>

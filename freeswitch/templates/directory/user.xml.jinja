@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<include>
+    <user id="{{ account }}">
+    <params>
+{%- for param, value in params|dictsort %}
+        <param name="{{ param }}" value="{{ value }}"/>
+{%- endfor %}
+    </params>
+    <variables>
+{%- for variable, value in variables|dictsort %}
+      <variable name="{{ variable }}" value="{{ value }}"/>
+{%- endfor %}
+    </variables>
+  </user>
+</include>

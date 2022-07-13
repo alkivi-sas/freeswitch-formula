@@ -1,0 +1,15 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'sofia' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="sofia.conf" description="sofia Endpoint">
+  <global_settings>
+    {%- for param in freeswitch['autoload_configs'][module].get('global_settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </global_settings>
+
+  <profiles>
+    <X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>
+  </profiles>
+</configuration>

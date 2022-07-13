@@ -1,0 +1,15 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'translate' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="translate.conf" description="Number Translation Rules">
+  <profiles>
+{%- for profile, p_data in freeswitch['autoload_configs'][module].get('profiles', {})|dictsort %}
+    <profile name="{{ profile }}">
+	{%- for rule in p_data.get('rules', []) %}
+      <rule regex="{{ rule.regex }}" replace="{{ rule.replace }}"/>
+	{%- endfor %}
+    </profile>
+{%- endfor %}
+  </profiles>
+</configuration>

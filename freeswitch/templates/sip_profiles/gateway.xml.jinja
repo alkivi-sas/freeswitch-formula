@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<include>
+    <gateway name="{{ gateway }}">
+{%- for param, value in params|dictsort %}
+        <param name="{{ param }}" value="{{ value }}"/>
+{%- endfor %}
+  </gateway>
+</include>

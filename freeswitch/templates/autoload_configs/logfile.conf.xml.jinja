@@ -1,0 +1,29 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'logfile' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="logfile.conf" description="File Logging">
+  <settings>
+    {%- for param in freeswitch['autoload_configs'][module].get('settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </settings>
+
+  <profiles>
+    {%- for profile, data in freeswitch['autoload_configs'][module].get('profiles', {})|dictsort %}
+    <profile name="{{ profile }}">
+      <settings>
+        {%- for param in data.get('settings', []) %}
+        <param name="{{ param.name }}" value="{{ param.value }}"/>
+        {%- endfor %}
+      </settings>
+
+      <mappings>
+        {%- for map in data.get('mappings', []) %}
+        <map name="{{ map.name }}" value="{{ map.value }}"/>
+        {%- endfor %}
+      </mappings>
+    </profile>
+    {%- endfor %}
+  </profiles>
+</configuration>

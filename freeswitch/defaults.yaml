@@ -1,0 +1,237 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+freeswitch:
+  vars:
+    domain: sip.example.org
+    internal_sip_port: 5060
+    external_sip_port: 5080
+    rtp_start_port: 9000
+    rtp_end_port: 10999
+    domain_name: sip.example.org
+    global_codec_prefs:
+      - PCMU
+      - PCMA
+
+  autoload_configs:
+    acl:
+      network-lists:
+        - name: domains
+          default: deny
+    translate:
+      profiles:
+        US:
+          rules:
+            - regex: '^0([1-9]\d{8})$'
+              replace: '+33$1'
+            - regex: '^0033([1-9]\d{8})$'
+              replace: '+33$1'
+            - regex: '^00(\d{11})$'
+              replace: '+$1'
+    cdr_csv:
+      settings:
+        - name: default-template
+          value: default
+        - name: rotate-on-hup
+          value: "true"
+        - name: legs
+          value: ab
+      templates:
+        - name: default
+          template: '"${caller_id_name}","${caller_id_number}","${destination_number}","${context}","${start_stamp}","${answer_stamp}","${end_stamp}","${duration}","${billsec}","${hangup_cause}","${uuid}","${bleg_uuid}","${accountcode}","${read_codec}","${write_codec}","${rtp_audio_in_jitter_min_variance}","${rtp_audio_in_jitter_max_variance}","${rtp_audio_in_jitter_loss_rate}","${rtp_audio_in_jitter_burst_rate}","${rtp_audio_in_mean_interval}","${rtp_audio_in_quality_percentage}","${rtp_audio_in_mos}","${rtp_audio_in_packet_count}","${rtp_audio_in_media_packet_count}","${rtp_audio_in_skip_packet_count}","${rtp_audio_in_jitter_packet_count}","${rtp_audio_in_dtmf_packet_count}","${rtp_audio_in_cng_packet_count}","${rtp_audio_in_flush_packet_count}","${rtp_audio_out_packet_count}","${rtp_audio_out_media_packet_count}","${rtp_audio_out_skip_packet_count}","${rtp_audio_out_dtmf_packet_count}","${rtp_audio_out_cng_packet_count}","${rtp_audio_rtcp_packet_count}","${rtp_audio_in_largest_jb_size}","${rtp_audio_in_flaw_total}"'
+    console:
+      mappings:
+        - name: all
+          value: console,debug,info,notice,warning,err,crit,alert
+      settings:
+        - name: colorize
+          value: "true"
+        - name: loglevel
+          value: warning
+    db:
+      settings:
+        - name: odbc-dsn
+          value: "$${odbc_base}"
+    event_socket:
+      settings:
+        - name: nat-map
+          value: "false"
+        - name: listen-ip
+          value: 127.0.0.1
+        - name: listen-port
+          value: 8021
+        - name: password
+          value: ClueCon
+    logfile:
+      settings:
+        - name: rotate-on-hup
+          value: "true"
+      profiles:
+        default:
+          mappings:
+            - name: all
+              value: debug,info,notice,warning,err,crit,alert
+    modules:
+      - mod_console
+      - mod_logfile
+      - mod_cdr_csv
+      - mod_event_socket
+      - mod_sofia
+      - mod_loopback
+      - mod_commands
+      - mod_db
+      - mod_dptools
+      - mod_expr
+      - mod_hash
+      - mod_esf
+      - mod_dialplan_xml
+      - mod_sndfile
+      - mod_translate
+      - mod_native_file
+      - mod_xml_rpc
+      - mod_lua
+    pre_load_modules:
+      - mod_pgsql
+    sofia:
+      global_settings:
+        - name: log-level
+          value: 0
+        - name: tracelevel
+          value: DEBUG
+    switch:
+      settings:
+        - name: colorize-console
+          value: "true"
+        - name: dump-cores
+          value: "yes"
+        - name: max-sessions
+          value: 1000
+        - name: sessions-per-second
+          value: 30
+        - name: loglevel
+          value: debug
+        - name: core-db-dsn
+          value: "$${odbc_base}"
+        - name: core-recovery-db-dsn
+          value: "$${odbc_base}"
+        - name: rtp-start-port
+          value: "$${rtp_start_port}"
+        - name: rtp-end-port
+          value: "$${rtp_end_port}"
+        - name: switchname
+          value: default
+    xml_rpc:
+      settings:
+        - name: http-port
+          value: 8080
+        - name: auth-realm
+          value: freeswitch
+        - name: auth-user
+          value: freeswitch
+        - name: auth-pass
+          value: "$${xml_rpc_password}"
+        - name: commands-to-log
+          value: ".*"
+
+  modules:
+    - applications/mod_commands
+    - applications/mod_conference
+    - applications/mod_db
+    - applications/mod_dptools
+    - applications/mod_esf
+    - applications/mod_expr
+    - applications/mod_hash
+    - dialplans/mod_dialplan_xml
+    - endpoints/mod_loopback
+    - endpoints/mod_sofia
+    - event_handlers/mod_cdr_csv
+    - event_handlers/mod_event_socket
+    - formats/mod_native_file
+    - formats/mod_sndfile
+    - languages/mod_lua
+    - loggers/mod_console
+    - loggers/mod_logfile
+    - xml_int/mod_xml_rpc
+
+  directory:
+    "$${domain}":
+      params:
+        - name: dial-string
+          value: '{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}'
+      variables:
+        - name: record_stereo
+          value: 'true'
+        - name: default_gateway
+          value: '$${default_provider}'
+        - name: default_areacode
+          value: '$${default_areacode}'
+        - name: transfer_fallback_extension
+          value: 'operator'
+      groups:
+        default: {}
+  sip_profiles:
+    external:
+      settings:
+        - name: auth-calls
+          value: 'false'
+        - name: track-calls
+          value: 'true'
+        - name: odbc-dsn
+          value: '$${odbc_base}'
+        - name: debug
+          value: '0'
+        - name: dialplan
+          value: 'XML'
+        - name: context
+          value: 'public'
+        - name: codec-prefs
+          value: '$${global_codec_prefs}'
+        - name: rtp-ip
+          value: '$${rtp_ip}'
+        - name: sip-ip
+          value: '$${sip_ip}'
+        - name: ext-rtp-ip
+          value: '$${ext_rtp_ip}'
+        - name: ext-sip-ip
+          value: '$${ext_sip_ip}'
+        - name: sip-port
+          value: '$${external_sip_port}'
+      domains:
+        - name: all
+          alias: 'false'
+          parse: 'true'
+    internal:
+      settings:
+        - name: auth-calls
+          value: 'true'
+        - name: apply-nat-acl
+          value: 'nat.auto'
+        - name: track-calls
+          value: 'true'
+        - name: odbc-dsn
+          value: '$${odbc_base}'
+        - name: debug
+          value: '0'
+        - name: sip-trace
+          value: 'yes'
+        - name: dialplan
+          value: 'XML'
+        - name: context
+          value: 'public'
+        - name: codec-prefs
+          value: '$${global_codec_prefs}'
+        - name: rtp-ip
+          value: '$${rtp_ip}'
+        - name: sip-ip
+          value: '$${sip_ip}'
+        - name: ext-rtp-ip
+          value: '$${ext_rtp_ip}'
+        - name: ext-sip-ip
+          value: '$${ext_sip_ip}'
+        - name: sip-port
+          value: '$${internal_sip_port}'
+        - name: presence-hosts
+          value: '$${sip_ip}' 
+      domains:
+        - name: all
+          alias: 'true'
+          parse: 'false'

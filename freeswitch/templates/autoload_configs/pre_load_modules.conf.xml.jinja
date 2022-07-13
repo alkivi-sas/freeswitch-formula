@@ -1,0 +1,9 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'pre_load_modules' -%}
+<configuration name="pre_load_modules.conf" description="Modules">
+  <modules>
+    {%- for m in freeswitch['autoload_configs'][module] %}
+    <load module="{{ m }}"/>
+    {%- endfor %}
+  </modules>
+</configuration>

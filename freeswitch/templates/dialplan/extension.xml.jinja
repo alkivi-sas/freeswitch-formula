@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<include>
+  <extension name="{{ sda }}">
+    <condition field="{{ condition['field'] }}" expression="{{ condition['expression'] }}">
+      {%- for action in actions %}
+      <action application="{{ action['application']}}" {% if action.get('data', None) %}data="{{ action['data'] }}"{% endif %}/>
+      {%- endfor %}
+    </condition>
+  </extension>
+</include>

@@ -1,0 +1,11 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'switch' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="switch.conf" description="Core Configuration">
+  <settings>
+    {%- for param in freeswitch['autoload_configs'][module].get('settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </settings>
+</configuration>

@@ -1,0 +1,18 @@
+freeswitch:
+  apt:
+    token: token_from_signalwire
+  vars:
+    odbc_base: "pgsql://host=postgresql.database.cloud.ovh.net port=20212 dbname=fscore user=freeswitch password='notverygoodpassword' options='-c client_min_messages=NOTICE'"
+    domain: sip.example.fr
+    internal_sip_port: 5090
+    external_sip_port: 5080
+    rtp_ip: 10.50.60.100
+    sip_ip: 10.50.60.100
+    ext_rtp_ip: 8.8.8.8
+    ext_sip_ip: 8.8.8.8
+    domain_name: sip.example.fr
+    homer_capture_host: 10.50.60.110
+    homer_capture_port: 9060
+    global_codec_prefs:
+      - PCMU
+      - PCMA

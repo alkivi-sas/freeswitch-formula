@@ -1,0 +1,11 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'xml_rpc' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="xml_rpc.conf" description="XML RPC">
+  <settings>
+    {%- for param in freeswitch['autoload_configs'][module].get('settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </settings>
+</configuration>

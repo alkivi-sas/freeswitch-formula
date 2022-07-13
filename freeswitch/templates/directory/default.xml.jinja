@@ -1,0 +1,30 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<?xml version="1.0"?>
+<include>
+{%- for domain, d_data in freeswitch.get('directory', {})|dictsort %}
+  <!--the domain or ip (the right hand side of the @ in the addr-->
+  <domain name="{{ domain }}">
+    <params>
+      {%- for param in d_data.get('params', []) %}
+      <param name="{{ param.name }}" value="{{ param.value }}"/>
+      {%- endfor %}
+    </params>
+    <variables>
+      {%- for variable in d_data.get('variables', []) %}
+      <variable name="{{ variable.name }}" value="{{ variable.value }}"/>
+      {%- endfor %}
+    </variables>
+    <groups>
+      {%- for group, g_data in d_data.get('groups', {})|dictsort %}
+      <group name="{{ group }}">
+        <users>
+          <X-PRE-PROCESS cmd="include" data="{{ group }}/*.xml"/>
+        </users>
+      </group>
+      {%- endfor %}
+    </groups>
+  </domain>
+{%- endfor %}
+</include>

@@ -1,0 +1,17 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'cdr_csv' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="cdr_csv.conf" description="CDR CSV Format">
+  <settings>
+    {%- for param in freeswitch['autoload_configs'][module].get('settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </settings>
+
+  <templates>
+    {%- for template in freeswitch['autoload_configs'][module].get('templates', []) %}
+    <template name="{{ template.name }}">{{ template.template}}</template>
+    {%- endfor %}
+  </templates>
+</configuration>

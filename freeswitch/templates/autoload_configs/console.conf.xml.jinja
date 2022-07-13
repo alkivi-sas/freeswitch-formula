@@ -1,0 +1,17 @@
+{%- from "freeswitch/map.jinja" import freeswitch with context -%}
+{%- set module = 'console' -%}
+<!-- This file is managed by Salt 
+    !! DO NOT EDIT !! -->
+<configuration name="console.conf" description="Console Logger">
+  <mappings>
+    {%- for map in freeswitch['autoload_configs'][module].get('mappings', []) %}
+    <map name="{{ map.name }}" value="{{ map.value }}"/>
+    {%- endfor %}
+  </mappings>
+
+  <settings>
+    {%- for param in freeswitch['autoload_configs'][module].get('settings', []) %}
+    <param name="{{ param.name }}" value="{{ param.value }}"/>
+    {%- endfor %}
+  </settings>
+</configuration>
