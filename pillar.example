@@ -1,6 +1,8 @@
 freeswitch:
   apt:
     token: token_from_signalwire
+    # release (default) or unstable (prerelease)
+    channel: release
   vars:
     odbc_base: "pgsql://host=postgresql.database.cloud.ovh.net port=20212 dbname=fscore user=freeswitch password='notverygoodpassword' options='-c client_min_messages=NOTICE'"
     domain: sip.example.fr

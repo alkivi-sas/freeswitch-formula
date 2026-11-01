@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 freeswitch:
+  apt:
+    # release (stable) or unstable (prerelease)
+    channel: release
   vars:
     domain: sip.example.org
     internal_sip_port: 5060

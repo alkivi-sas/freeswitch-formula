@@ -25,7 +25,7 @@
 freeswitch_repo:
   pkgrepo.managed:
     - humanname: Freeswitch
-    - name: deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ buster main
+    - name: deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-{{ freeswitch.apt.channel }}/ {{ salt['grains.get']('oscodename') }} main
     - file: /etc/apt/sources.list.d/freeswitch.list
     - clean_file: True
     - gpgcheck: 1
